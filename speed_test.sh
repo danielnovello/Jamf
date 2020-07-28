@@ -12,7 +12,7 @@ curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.p
 Message=$(cat "$output" | sed -e '/^Retrieving speedtest.net configuration/d ; /^Retrieving speedtest.net server list/d ; /^Selecting best server based on ping/d ; /^Testing download speed/d ; /^Testing upload speed/d')
 # Run the Jamf helper window
 Alert=$("$Jhelper" -windowType utility -title "Speed Test" -description "$Message" -button1 "Close" -defaultButton 1 -icon "/Users/$loggedInUser/Library/Application Support/com.jamfsoftware.selfservice.mac/Documents/Images/brandingimage.png" -iconSize 100)
-if [ -z "$line" ]; then
+if [ -f "$output" ]; then
         echo "$Message"
         exit 0
     else
