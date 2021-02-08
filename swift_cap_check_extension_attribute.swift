@@ -19,8 +19,9 @@ do {
         //Bytes
         //print(capacity)
     } else {
-        print("Capacity is unavailable")
+        print("<result>Capacity is unavailable</result>")
     }
 } catch {
-    print("Error retrieving capacity: \(error.localizedDescription)")
+    print("<result>Error retrieving capacity: \(error.localizedDescription)</result>")
 }
+
