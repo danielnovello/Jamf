@@ -12,8 +12,11 @@ serial_number=$(system_profiler SPHardwareDataType | grep 'Serial Number (system
 ### Curl Variables
 header=(--silent --header "Content-Type: application/json" --header "Accept: application/json" --header "Authorization: Bearer $snipe_api_key")
 ### Data to apply. Add some variables (To Do)
+# asset_tag > "Whatever you want"
 # status_id > 1="Pending", 2="Ready to Deploy", 3="Archived"
 # model_id= > E.G. 1="MacBook Pro (#MacBookPro11,3)"
+# name > from $computer_name variable
+# serial > from machines $serial_number variable
 data_add='{"asset_tag":"XXXXX_tag","status_id":2,"model_id":1,"name":"'"$computer_name"'","serial":"'"$serial_number"'"}'
 
 ### Search for device by Serial Number
@@ -46,7 +49,7 @@ deleted_asset_check=$(deleted_function | sed -e 's/[{}]/''/g' | awk -v RS=',"' -
 #echo "This is the ID number for the asset in Snipe-IT: $id_number_search"
 #echo "Deleted? (True= No, False= Yes): $deleted_asset_check"
 
-### If serial number not found, add it. If found, patch it using its ID.
+### If serial number not found, add it. If found, patch it using its ID but not if its deleted.
 if [ "$serial_number" == "$serial_number_search" ] && [ "$deleted_asset_check" == "false" ]
 then
     echo "This asset is deleted. Ignoring..."
