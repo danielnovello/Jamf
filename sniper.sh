@@ -41,7 +41,9 @@ deleted_function() {
 }
 
 ### Search for mac serial number in Snipe-IT   
+# Get the Serial Number only from Snipe-IT
 serial_number_search=$(search_function | sed -e 's/[{}]/''/g' | awk -v RS=',"' -F: '/^serial/ {print $2}' | sed 's/"//g' | uniq)
+# Get the deleted status of the asset in Snipe-IT
 deleted_asset_check=$(deleted_function | sed -e 's/[{}]/''/g' | awk -v RS=',"' -F: '/^delete/ {if ( $2 =="true" || $2 =="false") print $2}')
 
 #echo "This is your serial number: $serial_number"
