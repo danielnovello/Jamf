@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script to download the latest macOS Installer in the background and alert the user when the download is complete
+# Script to download the latest macOS Installer in the background and alert the user when the download is complete. (also at 25%, 50% and 75%)
 
 # Log file
 log_file="/private/tmp/SU_download.log"
