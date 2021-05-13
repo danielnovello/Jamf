@@ -6,7 +6,7 @@ log_file="/private/tmp/SU_download.log"
 # Check file
 check_file="/private/tmp/SU_download_check.txt"
 
-# Clear out old log files
+# Clear out old log files if they exist
 if [[ -f "$log_file" && "$check_file" ]]
 then 
   rm "$log_file" && rm "$check_file"
@@ -22,7 +22,7 @@ loggedInUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { prin
 echo "macOS Installer download Started"|xargs -I {} osascript -e 'display notification "{}" with title "macOS Download"'
 
 # Wait for log file to populate (Give it more time to be safe)
-sleep 15
+sleep 30
 
 # Get the current percentage downloaded
 current=$(tail -1 "$log_file" | awk -F':' 'END{ print int($NF) }')
@@ -46,7 +46,7 @@ then
           exit 1
         else
           echo "Still Downloading macOS Intaller, its on $current%"
-          if [[ "$current" -eq 38 || "$current" -eq 40 ]] && [[ "$check_current" != "$current" ]]
+          if [[ "$current" -eq 25 || "$current" -eq 50 || "$current" -eq 75 ]] && [[ "$check_current" != "$current" ]]
           then 
             echo "macOS Installer $current% downloaded"|xargs -I {} osascript -e 'display notification "{}" with title "macOS Download"'
             echo "$current" >> "$check_file"
