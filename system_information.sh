@@ -24,7 +24,7 @@ getosname() {
 }
 
 # Get Machine name and date
-MachineInfo=$(/usr/bin/curl -s https://support-sp.apple.com/sp/product?cc="$( ioreg -l | grep IOPlatformSerialNumber | awk '{print $4}' | sed 's|"||g' | cut -b9-13 )" | sed "s@.*<configCode>\(.*\)</configCode>.*@\1@")
+MachineInfo=$(/usr/bin/curl --silent https://support-sp.apple.com/sp/product?cc="$( ioreg -l | grep IOPlatformSerialNumber | awk '{print $4}' | sed 's|"||g' | cut -b9-13 )" | sed "s@.*<configCode>\(.*\)</configCode>.*@\1@")
 # Get Model Identifier
 Model=$(/usr/sbin/ioreg -l | awk '/product-name/ { split($0, line, "\""); printf("%s\n", line[4]); }')
 # Get Operating System name
@@ -47,7 +47,7 @@ Uptime=$(/usr/bin/uptime | cut -d, -f1 | cut -d' ' -f4-5)
 # Local IP
 LocalIP=$(ifconfig en0 | grep inet | grep -v inet6 | cut -d" " -f2)
 # Wan IP
-WANIP=$(/usr/bin/curl ipinfo.io/ip)
+WANIP=$(/usr/bin/curl --silent ipinfo.io/ip)
 
 Message="Model: '$MachineInfo
 Model Identifier: $Model
@@ -58,11 +58,31 @@ Days since last restart: $Uptime
 Local IP Address: $LocalIP
 Internet IP Address: $WANIP"
 
+# Size of image (240x240, 480x480)
+size="480x480"
 
-Alert=$("$Jhelper" -windowType hud -title "System Information" -description "$Message" -button1 "Close" -button2 "Save" -defaultButton 1 -icon "/Users/$loggedInUser/Library/Application Support/com.jamfsoftware.selfservice.mac/Documents/Images/brandingimage.png" -iconSize 64)
-if [ "$Alert" == "2" ]; then
-        echo "$Message" > /Users/"$loggedInUser"/Desktop/System_Information.txt
-        exit 0
+# Redirect Function
+get_redirects(){
+    i=${2:-1}
+    read status url <<< $(/usr/bin/curl --silent -H 'Cache-Control: no-cache' -o /dev/null --silent --head --insecure --write-out '%{http_code}\t%{redirect_url}\n' "$1" -I)
+    printf '%d: %s %s\n' "$i" "$1";
+    if [ "$1" = "$url" ] || [ $i -gt 9 ]; then
+        echo "Recursion detected or more redirections than allowed. Stop."
     else
-        echo "Something went wrong"
-fi
+      case $status in
+          30*) get_redirects "$url" "$((i+1))"
+               ;;
+      esac
+    fi
+}
+
+# Get machine serial number
+serialnumber_image=$(ioreg -c IOPlatformExpertDevice -d 2 | awk -F\" '/IOPlatformSerialNumber/{print $(NF-1)}' | awk '{print substr($0,9)}')
+# Format URL
+URL="https://km.support.apple.com.edgekey.net/kb/securedImage.jsp?configcode=$serialnumber_image&size=$size"
+
+image_url=$(get_redirects "$URL" | tail -1 | cut -d' ' -f2)
+#echo "Downloading ${image_url##*/}"
+/usr/bin/curl --silent -ks -L "$image_url" --output /private/tmp/machine_image.png
+
+Alert=$("$Jhelper" -windowType hud -title "System Information" -description "$Message" -button1 "Close" -button2 "Save" -defaultButton 1 -icon "/private/tmp/machine_image.png" -iconSize 128)
