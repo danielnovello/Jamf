@@ -41,7 +41,8 @@ FreeSpace=$(/usr/sbin/diskutil info / | awk -F'[(|)]' '/Container Free Space/{pr
 # Remove GB
 TotalSizeFix=$(echo "$TotalSize" | cut -d' ' -f1)
 FreeSpaceFix=$(echo "$FreeSpace" | cut -d' ' -f1)
-FreePrecentage=$( echo "$FreeSpaceFix"/"$TotalSizeFix"*100 | bc -l | cut -d. -f1)
+FreePrecentage=$(echo "$FreeSpaceFix/$TotalSizeFix*100" | bc -l | cut -d. -f1)
+UsedSpace=$(echo "$TotalSizeFix-$FreeSpaceFix" | bc -l | cut -d' ' -f1)
 # Get time since last restart
 Uptime=$(/usr/bin/uptime | cut -d, -f1 | cut -d' ' -f4-5)
 # Local IP
@@ -49,11 +50,11 @@ LocalIP=$(ifconfig en0 | grep inet | grep -v inet6 | cut -d" " -f2)
 # Wan IP
 WANIP=$(/usr/bin/curl --silent ipinfo.io/ip)
 
-Message="Model: '$MachineInfo
+Message="Model: $MachineInfo
 Model Identifier: $Model
 Operating System: $OSName $osnamever
 Serial Number: $SerialNumber
-Hard Drive: $TotalSize ( Free: $FreeSpace | $FreePrecentage % Used )
+Hard Drive: $TotalSize ( Free: $FreeSpace | Used: $UsedSpace)
 Days since last restart: $Uptime
 Local IP Address: $LocalIP
 Internet IP Address: $WANIP"
