@@ -1,5 +1,7 @@
 #!/bin/bash
-
+# 
+# USE WITH CAUTION. IF YOU DONT UNDERSTAND WHAT THIS DOES, DONT USE IT!
+# 
 # Process(s) to monitor. (seperate with space)
 process=(Jira MAMP) # Examples
 # CPU percentage threshold for alerts
