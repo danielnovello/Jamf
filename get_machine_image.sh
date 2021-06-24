@@ -20,7 +20,7 @@ get_redirects(){
 # Get machine serial number
 serialnumber=$(ioreg -c IOPlatformExpertDevice -d 2 | awk -F\" '/IOPlatformSerialNumber/{print $(NF-1)}' | awk '{print substr($0,9)}')
 # Format URL
-URL="https://km.support.apple.com.edgekey.net/kb/securedImage.jsp?configcode=$serialnumber&size=$size"
+URL="https://km.support.apple.com.edgekey.net/kb/securedImage.jsp?configcode=$serialnumber&size=$size"GKJN
 
 image_url=$(get_redirects "$URL" | tail -1 | cut -d' ' -f2)
 echo "Downloading ${image_url##*/}"
