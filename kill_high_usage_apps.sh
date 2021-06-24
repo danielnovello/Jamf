@@ -21,7 +21,7 @@ while true
                 now_alert=$(date +%Y-%m-%d\ %H:%M:%S)
                 echo "$now_alert | $pid_name above $threshold% CPU usage ($cpu% )"
                 # Uncomment if you want notifications
-                "$pn_path" -type banner -title "CPU USAGE ALERT" -subtitle "$pid_name above $threshold CPU usage ($cpu% )" &
+                # "$pn_path" -type banner -title "CPU USAGE ALERT" -subtitle "$pid_name above $threshold CPU usage ($cpu% )" &
                 echo Killing "$pid_name" && pkill "$pid_name" # BE CAREFUL 
             fi    
         done
