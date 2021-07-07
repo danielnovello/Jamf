@@ -15,7 +15,7 @@ do
 
 # Ping check
 pinger() {
-    com_check=$(ping -q -c 1 -W 1 "${ip}" | grep "100.0% packet loss")
+    com_check=$(ping -q -c 1 -W 1 "${ip}"| grep -E "100.0% packet loss|100% packet loss")
     if [[ -z "$com_check" ]]
         then
         echo "${green}Reachable"
