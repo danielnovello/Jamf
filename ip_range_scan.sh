@@ -1,6 +1,6 @@
 #!/bin/bash
-# Create CSV File
-echo "IP Address, Ping, Forward lookup, Reverse lookup" > lan_scan.csv 
+# Create CSV File (UNCOMMENT IF YOU WANT)
+# echo "IP Address, Ping, Forward lookup, Reverse lookup" > lan_scan.csv 
 
 # Some colours
 red=$(tput setaf 1)
@@ -10,7 +10,7 @@ yellow=$(tput setaf 3)
 echo "Starting IP Address lookup..."
 echo ""
 
-for ip in 192.168.51.{1..255}
+for ip in 192.168.1.{1..255}
 do
 
 # Ping check
